@@ -1,0 +1,27 @@
+{
+  "name": "solid-draggable-div",
+  "version": "0.0.1",
+  "description": "Draggable div (solid.js)",
+  "main": "./lib/Draggable.Div",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "solidjs",
+    "draggable",
+    "div"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Olivergg1/solid-draggable-div"
+  },
+  "bugs": {
+    "url": "https://github.com/Olivergg1/solid-draggable-div/issues"
+  },
+  "homepage": "https://github.com/Olivergg1/solid-modal#readme",
+  "author": "Oliver Gustafsson",
+  "license": "ISC"
+}
