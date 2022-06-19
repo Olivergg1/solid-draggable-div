@@ -1,6 +1,7 @@
 import { Component, createSignal } from 'solid-js'
 import { JSXElement, JSX } from 'solid-js/types/index'
-import { isInViewport, Bounds } from './utilities'
+import { isInBounds, Bounds } from './utilities'
+import { Accessor } from 'solid-js/types/reactive/signal'
 
 type Position = {
   x: number
@@ -9,10 +10,12 @@ type Position = {
 
 interface Props extends JSX.HTMLAttributes<HTMLDivElement> {
   children: JSXElement
-  fixed?: boolean
+  fixed?: boolean | false
   style?: JSX.CSSProperties
   centered?: boolean | false
   initialPosition?: Position
+  when?: Accessor<boolean>
+  within: Accessor<DOMRect | undefined>
 }
 
 const DraggableDiv: Component<Props> = ({
@@ -21,6 +24,8 @@ const DraggableDiv: Component<Props> = ({
   initialPosition,
   centered,
   style,
+  when,
+  within,
   ...props
 }) => {
   const [position, setPosition] = createSignal<Position>(
@@ -29,15 +34,26 @@ const DraggableDiv: Component<Props> = ({
   const [pressed, setPressed] = createSignal<boolean>(false)
 
   const onMove = (e: MouseEvent) => {
+    if (typeof within === 'undefined') return
+    console.log(e.movementY)
     const bounds: Bounds = {
       top: position().y + e.movementY,
       left: position().x + e.movementX,
       bottom:
-        position().y + e.movementY + (e.target as HTMLElement).clientHeight,
-      right: position().x + e.movementX + (e.target as HTMLElement).clientWidth,
+        position().y +
+        e.movementY +
+        (e.currentTarget as HTMLElement).clientHeight,
+      right:
+        position().x +
+        e.movementX +
+        (e.currentTarget as HTMLElement).clientWidth,
     }
 
-    if (pressed() && isInViewport(bounds)) {
+    if (
+      pressed() &&
+      isInBounds(bounds, within()) &&
+      (typeof when !== 'undefined' ? when() : true)
+    ) {
       setPosition({
         x: position().x + e.movementX,
         y: position().y + e.movementY,
@@ -54,7 +70,7 @@ const DraggableDiv: Component<Props> = ({
       onMouseMove={onMove}
       style={{
         ...style,
-        position: 'absolute',
+        position: fixed === true ? 'fixed' : 'absolute',
         transform: `translate(${position().x}px, ${position().y}px)`,
       }}>
       {children}

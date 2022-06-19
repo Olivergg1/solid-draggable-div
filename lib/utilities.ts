@@ -5,12 +5,23 @@ export type Bounds = {
   left: number
 }
 
-export function isInViewport(bounds: Bounds): boolean {
-  return (
-    bounds.top >= 0 &&
-    bounds.left >= 0 &&
-    bounds.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
-    bounds.right <= (window.innerWidth || document.documentElement.clientWidth)
-  )
+export function isInBounds(
+  bounds: Bounds,
+  within: DOMRect | undefined
+): boolean {
+  if (typeof within === 'undefined') return false
+
+  // console.log(
+  //   bounds.left >= 0,
+  //   bounds.right <= within.width,
+  //   bounds.top >= 0,
+  //   bounds.bottom <= within.height
+  // )
+
+  console.log(bounds.bottom)
+
+  const horizontal = bounds.left >= 0 && bounds.right <= within.width
+  const vertical = bounds.top >= 0 && bounds.bottom <= within.height
+
+  return horizontal && vertical
 }
